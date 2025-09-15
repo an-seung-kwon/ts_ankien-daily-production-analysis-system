@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Streamlit secrets (do not commit real credentials)
+.streamlit/secrets.toml
+
+# OS/Editor
+.DS_Store
+.vscode/
+.idea/
+
+# Env files
+.env
+*.env
+
+# Project-specific ignores
+AGENTS.md
+Cloud_SQL_sample_DB.sql
+생산조회_개발스펙.md
