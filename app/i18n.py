@@ -12,11 +12,14 @@ TRANSLATIONS = {
         "kpi_avg_hourly": "평균 시간당 생산",
         "kpi_defect": "평균 불량률",
         "top_styles": "Top 10 스타일 (일일 총 생산)",
+        "tab_summary": "요약",
+        "tab_trend": "시간대 추이",
+        "tab_detail": "시간대 상세",
         "hourly_trend": "시간대별 생산 추이",
         "hourly_detail_by_style": "스타일별 시간대별 상세",
         "download_csv": "CSV 다운로드",
         "no_data": "해당 조건의 데이터가 없습니다.",
-        "locale": "언어",
+        "locale": "언어"
     },
     "EN": {
         "app_title": "Production Status Dashboard",
@@ -31,11 +34,14 @@ TRANSLATIONS = {
         "kpi_avg_hourly": "Avg Hourly",
         "kpi_defect": "Avg Defect Rate",
         "top_styles": "Top 10 Styles (Daily Total)",
+        "tab_summary": "Overview",
+        "tab_trend": "Hourly Trend",
+        "tab_detail": "Hourly Detail",
         "hourly_trend": "Hourly Production Trend",
         "hourly_detail_by_style": "Hourly Details by Style",
         "download_csv": "Download CSV",
         "no_data": "No data for the selected filters.",
-        "locale": "Language",
+        "locale": "Language"
     },
     "VI": {
         "app_title": "Bảng điều khiển Sản lượng",
@@ -50,13 +56,17 @@ TRANSLATIONS = {
         "kpi_avg_hourly": "Trung bình giờ",
         "kpi_defect": "Tỷ lệ lỗi TB",
         "top_styles": "Top 10 Kiểu (Tổng ngày)",
+        "tab_summary": "Tổng quan",
+        "tab_trend": "Xu hướng theo giờ",
+        "tab_detail": "Chi tiết theo giờ",
         "hourly_trend": "Xu hướng theo giờ",
         "hourly_detail_by_style": "Chi tiết theo giờ theo kiểu",
         "download_csv": "Tải CSV",
         "no_data": "Không có dữ liệu cho bộ lọc.",
-        "locale": "Ngôn ngữ",
-    },
+        "locale": "Ngôn ngữ"
+    }
 }
+
 
 def t(locale: str, key: str) -> str:
     loc = locale.upper() if locale else "KO"

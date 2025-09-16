@@ -21,6 +21,93 @@ except ModuleNotFoundError:
 st.set_page_config(page_title="Production Dashboard", layout="wide")
 
 
+MOBILE_STYLE = """
+<style>
+:root {
+    --card-radius: 12px;
+    --shadow-soft: 0 2px 12px rgba(15, 23, 42, 0.08);
+}
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+}
+[data-testid="stMetric"] {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-soft);
+    padding: 0.9rem 1.1rem;
+}
+div[data-testid="stMetricValue"] {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+div[data-testid="stMetricLabel"] {
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+[data-testid="stDataFrame"] {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-soft);
+}
+[data-testid="stDataFrame"] > div:first-child {
+    border-radius: var(--card-radius);
+}
+[data-testid="stDataFrame"] > div {
+    overflow-x: auto;
+}
+[data-testid="stDataFrame"] div[role="grid"] {
+    border: none;
+}
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.75rem;
+}
+.stTabs [data-baseweb="tab"] {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.65);
+    box-shadow: var(--shadow-soft);
+    color: #1e293b;
+}
+.stTabs [data-baseweb="tab"][aria-selected="true"] {
+    background: #2563eb;
+    color: #ffffff;
+}
+@media (max-width: 768px) {
+    .block-container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    section[data-testid="stHorizontalBlock"] > div {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+    div[data-testid="metric-container"] {
+        width: 100%;
+    }
+    [data-testid="stMetric"] {
+        width: 100%;
+    }
+    [data-testid="stDataFrame"] {
+        font-size: 0.95rem;
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    .stTabs [data-baseweb="tab"] {
+        flex: 1 1 45%;
+        justify-content: center;
+    }
+}
+</style>
+"""
+
+
+def apply_responsive_styles():
+    st.markdown(MOBILE_STYLE, unsafe_allow_html=True)
+
+
 def get_locale() -> str:
     app_cfg = st.secrets.get("app", {}) if hasattr(st, "secrets") else {}
     default_locale = app_cfg.get("default_locale", "KO")
@@ -138,6 +225,7 @@ def hourly_detail_grid(locale: str, df: pd.DataFrame, style_order: Optional[list
 def main():
     locale = get_locale()
     st.title(t(locale, "app_title"))
+    apply_responsive_styles()
 
     # Sidebar
     with st.sidebar:
@@ -189,9 +277,19 @@ def main():
         df = df[df["style_number"].str.contains(style_like, case=False, na=False)]
 
     kpi_cards(locale, df)
-    top_styles = top_styles_table(locale, df)
-    hourly_chart(locale, df)
-    hourly_detail_grid(locale, df, style_order=top_styles)
+    overview_tab, trend_tab, detail_tab = st.tabs([
+        t(locale, "tab_summary"),
+        t(locale, "tab_trend"),
+        t(locale, "tab_detail"),
+    ])
+
+    top_styles: list[str] = []
+    with overview_tab:
+        top_styles = top_styles_table(locale, df)
+    with trend_tab:
+        hourly_chart(locale, df)
+    with detail_tab:
+        hourly_detail_grid(locale, df, style_order=top_styles)
 
     # CSV Download
     csv = df.to_csv(index=False).encode("utf-8-sig")
