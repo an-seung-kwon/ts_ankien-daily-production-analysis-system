@@ -70,16 +70,17 @@ def kpi_cards(locale: str, df: pd.DataFrame):
     c2.metric(t(locale, "kpi_avg_hourly"), f"{avg_hourly:,.2f}")
 
 
-def top_styles_table(locale: str, df: pd.DataFrame):
+def top_styles_table(locale: str, df: pd.DataFrame) -> list[str]:
     if df.empty:
-        return
+        return []
     cols = ["style_number", "daily_production_total"]
     present = [c for c in cols if c in df.columns]
     if len(present) < 2:
-        return
+        return []
     topn = df.groupby("style_number", as_index=False)["daily_production_total"].sum().sort_values("daily_production_total", ascending=False).head(10)
     st.subheader(t(locale, "top_styles"))
     st.dataframe(topn, hide_index=True, use_container_width=True)
+    return topn["style_number"].tolist()
 
 
 def hourly_chart(locale: str, df: pd.DataFrame):
@@ -96,7 +97,7 @@ def hourly_chart(locale: str, df: pd.DataFrame):
     st.altair_chart(chart, use_container_width=True)
 
 
-def hourly_detail_grid(locale: str, df: pd.DataFrame):
+def hourly_detail_grid(locale: str, df: pd.DataFrame, style_order: Optional[list[str]] = None):
     # Build per-style x time grid including overtime
     hour_cols = [
         "t_0830", "t_0930", "t_1000", "t_1130", "t_1330", "t_1430", "t_1530", "t_1630", "t_1730", "t_1800", "overtime",
@@ -122,6 +123,13 @@ def hourly_detail_grid(locale: str, df: pd.DataFrame):
     piv = piv.reindex(columns=cols)
     # Add row total
     piv["Total"] = piv.sum(axis=1)
+
+    if style_order:
+        top_idx = [s for s in style_order if s in piv.index]
+        if top_idx:
+            piv_top = piv.loc[top_idx]
+            piv_rest = piv.drop(index=top_idx, errors="ignore")
+            piv = pd.concat([piv_top, piv_rest])
 
     st.subheader(t(locale, "hourly_detail_by_style"))
     st.dataframe(piv.reset_index(), use_container_width=True)
@@ -181,9 +189,9 @@ def main():
         df = df[df["style_number"].str.contains(style_like, case=False, na=False)]
 
     kpi_cards(locale, df)
-    top_styles_table(locale, df)
+    top_styles = top_styles_table(locale, df)
     hourly_chart(locale, df)
-    hourly_detail_grid(locale, df)
+    hourly_detail_grid(locale, df, style_order=top_styles)
 
     # CSV Download
     csv = df.to_csv(index=False).encode("utf-8-sig")
