@@ -285,14 +285,24 @@ def main():
         sel_lines = st.multiselect(t(locale, "line"), options=line_opts)
         cat_opts = sorted(df["category"].dropna().unique().tolist()) if "category" in df else []
         sel_cats = st.multiselect(t(locale, "category"), options=cat_opts)
-        style_like = st.text_input(t(locale, "style"))
+
+        # 스타일 번호 선택 옵션 추가
+        style_opts = sorted(df["style_number"].dropna().unique().tolist()) if "style_number" in df else []
+        sel_styles = st.multiselect(t(locale, "style"), options=style_opts)
+
+        # 스타일 텍스트 검색 (기존 기능 유지)
+        style_like = st.text_input(t(locale, "style_search"), placeholder="Search style...")
 
     # 선택된 필터 적용
     if sel_lines:
         df = df[df["line"].isin(sel_lines)]
     if sel_cats and "category" in df:
         df = df[df["category"].isin(sel_cats)]
-    if style_like:
+
+    # 스타일 필터 적용 (선택 또는 검색)
+    if sel_styles:
+        df = df[df["style_number"].isin(sel_styles)]
+    elif style_like:  # 선택된 스타일이 없을 때만 텍스트 검색 적용
         df = df[df["style_number"].str.contains(style_like, case=False, na=False)]
 
     kpi_cards(locale, df)
