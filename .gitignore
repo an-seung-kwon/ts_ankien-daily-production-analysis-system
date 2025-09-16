@@ -20,3 +20,7 @@ venv/
 AGENTS.md
 Cloud_SQL_sample_DB.sql
 생산조회_개발스펙.md
+
+.claude/settings.local.json
+error.png
+
