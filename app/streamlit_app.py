@@ -27,12 +27,29 @@ MOBILE_STYLE = """
     --card-radius: 12px;
     --shadow-soft: 0 2px 12px rgba(15, 23, 42, 0.08);
 }
+[data-testid="stAppViewContainer"] {
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    color: #0f172a;
+}
+header[data-testid="stHeader"] {
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+    display: none;
+}
 .block-container {
     padding-top: 1.5rem;
     padding-bottom: 2.5rem;
 }
+.block-container h1 {
+    font-size: clamp(1.85rem, 2vw + 1.25rem, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+    margin-bottom: 1.2rem;
+}
 [data-testid="stMetric"] {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-soft);
     padding: 0.9rem 1.1rem;
@@ -40,14 +57,16 @@ MOBILE_STYLE = """
 div[data-testid="stMetricValue"] {
     font-size: 1.5rem;
     font-weight: 600;
+    color: #0f172a;
 }
 div[data-testid="stMetricLabel"] {
     font-size: 0.85rem;
     letter-spacing: 0.03em;
     text-transform: uppercase;
+    color: #475569;
 }
 [data-testid="stDataFrame"] {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.96);
     border-radius: var(--card-radius);
     box-shadow: var(--shadow-soft);
 }
